@@ -1,0 +1,33 @@
+name: pick_place_blocks
+description: MoveIt2 scripted pick-place style demo with sample colored blocks in Isaac Sim.
+defaults:
+  group_name: ur_manipulator
+  pipeline_id: ompl
+  planner_id: RRTConnectkConfigDefault
+  velocity_scale: 0.25
+  acceleration_scale: 0.25
+  pause_seconds: 0.4
+named_targets:
+  home: [0.0, -1.0, 1.15, -0.35, 0.55, 0.0]
+  scan_blocks: [0.18, -0.9, 1.05, -0.35, 0.65, 0.0]
+  approach_red_cube: [-0.915, -0.4461, 1.5363, -2.6609, 1.5708, -0.6558]
+  descend_red_cube: [-0.915, 1.0946, -1.3433, -1.3219, 1.5708, -0.6558]
+  lift_red_cube: [-0.915, -0.4461, 1.5363, -2.6609, 1.5708, -0.6558]
+  approach_green_target: [0.8279, 2.2332, 1.439, -2.102, -1.5708, 0.7429]
+  descend_green_target: [0.8279, 2.1112, 1.2425, -1.7829, -1.5708, 0.7429]
+  retreat_from_target: [0.8279, 2.2332, 1.439, -2.102, -1.5708, 0.7429]
+steps:
+  - move_joints: home
+  - wait: 0.4
+  - move_joints: scan_blocks
+  - move_joints: approach_red_cube
+  - move_joints: descend_red_cube
+  - attach: pick_cube_red
+  - wait: 0.3
+  - move_joints: lift_red_cube
+  - move_joints: approach_green_target
+  - move_joints: descend_green_target
+  - detach: pick_cube_red
+  - wait: 0.3
+  - move_joints: retreat_from_target
+  - move_joints: home

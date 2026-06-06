@@ -16,7 +16,9 @@ External app / HTTP / MoveIt
 ## What Is Included
 
 - `assets/ur3e`: UR3e USD asset copied from the local Omniverse asset folder.
+- `assets/scenes/ur3e_pick_place_demo.usda`: demo scene with UR3e, table, colored blocks, and place target.
 - `ros2_ws/src/ur3e_omniverse_bridge`: ROS 2 bridge package for `/joint_command`.
+- `scenarios/pick_place_blocks.yaml`: scripted MoveIt2 scenario for the block demo.
 - `docs`: step-by-step RunPod, Isaac Sim, ROS 2, MoveIt 2, sync, and training notes.
 - `scripts`: install/build/run helpers for Ubuntu 24.04 + ROS 2 Jazzy.
 
@@ -38,7 +40,8 @@ Read in order:
 2. [Install Isaac Sim](docs/02-install-isaac-sim.md)
 3. [Install ROS 2 and MoveIt 2](docs/03-install-ros2-moveit2.md)
 4. [Sync External App to Isaac Sim](docs/04-sync-external-app-to-isaac-sim.md)
-5. [Training Roadmap](docs/05-training-roadmap-isaac-lab.md)
+5. [Pick-Place Demo Status](docs/06-pick-place-demo-status.md)
+6. [Training Roadmap](docs/05-training-roadmap-isaac-lab.md)
 
 ## Build the ROS 2 Workspace
 
@@ -64,6 +67,35 @@ source /opt/ros/jazzy/setup.bash
 source ~/robotx/ros2_ws/install/setup.bash
 ros2 topic echo /joint_command --once
 ```
+
+## Run the MoveIt2 + Isaac Pick-Place Scene
+
+Terminal 1:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_pick_place_demo_scene.sh
+```
+
+Terminal 2:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_isaac_stack.sh
+```
+
+Terminal 3:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_scenario.sh scenarios/pick_place_blocks.yaml
+```
+
+Recorded demo video:
+
+- `docs/media/pick_place_moveit_isaac_demo_latest.mp4`
+
+Current limitation: the robot motion sync works, but the block grasp is not yet a validated physical grasp. Isaac currently rejects attach if the measured end-effector/object distance is too large. See `docs/06-pick-place-demo-status.md`.
 
 ## Run HTTP Control for an External App
 

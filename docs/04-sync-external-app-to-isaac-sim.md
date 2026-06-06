@@ -205,6 +205,40 @@ cd /root/ur3e-isaac-sim-digital-twin
 
 The current UR3e USD does not include a working gripper, so this demo performs the arm motion sequence: home, approach pick, descend, lift, approach place, descend, retreat, home. Add a gripper/collider asset before using it as a physical grasp simulation.
 
+## Step 7: Run the Colored Object Demo Scene
+
+Open Isaac Sim with the table, colored cubes, and target marker:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_pick_place_demo_scene.sh
+```
+
+Run the MoveIt2 stack:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_isaac_stack.sh
+```
+
+Run the scenario YAML:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_scenario.sh scenarios/pick_place_blocks.yaml
+```
+
+The scenario runner sends MoveIt joint goals and publishes guarded object commands on `/pick_place_command`.
+
+Current status:
+
+- robot trajectory sync into Isaac works
+- `/pick_place_command` is published and consumed by Isaac
+- attach is refused if the end-effector/object distance is too large
+- the latest recorded video is `docs/media/pick_place_moveit_isaac_demo_latest.mp4`
+
+See `docs/06-pick-place-demo-status.md` for the honest current limitation and the next steps needed for a real grasp.
+
 ## Control Rule
 
 Use one command source at a time:

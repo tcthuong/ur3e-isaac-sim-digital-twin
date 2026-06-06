@@ -25,6 +25,7 @@ setup(
             "follow_joint_trajectory_to_joint_command = ur3e_omniverse_bridge.follow_joint_trajectory_to_joint_command:main",
             "http_joint_command_server = ur3e_omniverse_bridge.http_joint_command_server:main",
             "moveit_pick_place_demo = ur3e_omniverse_bridge.moveit_pick_place_demo:main",
+            "moveit_scenario_runner = ur3e_omniverse_bridge.moveit_scenario_runner:main",
         ],
     },
 )

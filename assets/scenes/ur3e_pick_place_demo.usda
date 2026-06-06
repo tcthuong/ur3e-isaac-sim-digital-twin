@@ -1,0 +1,119 @@
+#usda 1.0
+(
+    defaultPrim = "DemoScene"
+    metersPerUnit = 1
+    subLayers = [
+        @../ur3e/ur3e.usd@
+    ]
+    upAxis = "Z"
+)
+
+def Xform "DemoScene"
+{
+    def Xform "workspace"
+    {
+        def Cube "table"
+        {
+            double size = 1
+            double3 xformOp:scale = (0.75, 0.45, 0.035)
+            double3 xformOp:translate = (0.2, -0.25, -0.035)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+            rel material:binding = </DemoScene/materials/table_mat>
+        }
+
+        def Cube "pick_cube_red"
+        {
+            double size = 0.08
+            double3 xformOp:translate = (0.35, -0.24, 0.065)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            rel material:binding = </DemoScene/materials/red_mat>
+        }
+
+        def Cube "pick_cube_blue"
+        {
+            double size = 0.07
+            double3 xformOp:translate = (0.22, -0.38, 0.06)
+            uniform token[] xformOpOrder = ["xformOp:translate"]
+            rel material:binding = </DemoScene/materials/blue_mat>
+        }
+
+        def Cube "place_target_green"
+        {
+            double size = 0.1
+            double3 xformOp:scale = (1.0, 1.0, 0.08)
+            double3 xformOp:translate = (-0.38, -0.22, 0.01)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+            rel material:binding = </DemoScene/materials/green_mat>
+        }
+
+        def Xform "labels"
+        {
+            def Sphere "pick_marker"
+            {
+                double radius = 0.025
+                double3 xformOp:translate = (0.35, -0.24, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:translate"]
+                rel material:binding = </DemoScene/materials/red_mat>
+            }
+
+            def Sphere "place_marker"
+            {
+                double radius = 0.025
+                double3 xformOp:translate = (-0.38, -0.22, 0.18)
+                uniform token[] xformOpOrder = ["xformOp:translate"]
+                rel material:binding = </DemoScene/materials/green_mat>
+            }
+        }
+    }
+
+    def Xform "materials"
+    {
+        def Material "table_mat"
+        {
+            token outputs:surface.connect = </DemoScene/materials/table_mat/PreviewSurface.outputs:surface>
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.42, 0.42, 0.38)
+                float inputs:roughness = 0.65
+                token outputs:surface
+            }
+        }
+
+        def Material "red_mat"
+        {
+            token outputs:surface.connect = </DemoScene/materials/red_mat/PreviewSurface.outputs:surface>
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.9, 0.08, 0.06)
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+
+        def Material "blue_mat"
+        {
+            token outputs:surface.connect = </DemoScene/materials/blue_mat/PreviewSurface.outputs:surface>
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.08, 0.22, 0.9)
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+
+        def Material "green_mat"
+        {
+            token outputs:surface.connect = </DemoScene/materials/green_mat/PreviewSurface.outputs:surface>
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.08, 0.75, 0.22)
+                float inputs:roughness = 0.45
+                token outputs:surface
+            }
+        }
+    }
+}
