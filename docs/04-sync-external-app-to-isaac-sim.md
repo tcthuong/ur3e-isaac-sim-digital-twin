@@ -18,7 +18,7 @@ Official Isaac Sim tutorial:
 ## Step 1: Build the Bridge
 
 ```bash
-cd ~/robotx/ros2_ws
+cd /root/ur3e-isaac-sim-digital-twin/ros2_ws
 source /opt/ros/jazzy/setup.bash
 colcon build --symlink-install
 source install/setup.bash
@@ -26,26 +26,53 @@ source install/setup.bash
 
 ## Step 2: Configure Isaac Sim Action Graph
 
-Open `~/robotx/assets/ur3e/ur3e.usd` in Isaac Sim.
+Use the launcher that opens the UR3e stage and creates the ROS 2 Action Graph automatically:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_ur3e_ros2_bridge.sh
+```
+
+The runtime graph is created at `/ActionGraph` with this wiring:
+
+```text
+On Playback Tick
+  -> ROS2 Subscribe Joint State [/joint_command]
+  -> Articulation Controller [/ur3e/root_joint]
+
+On Playback Tick
+  -> ROS2 Publish Joint State [/joint_states]
+  -> ROS2 Publish Clock [/clock]
+```
+
+The script finds the actual articulation root automatically. For the current UR3e USD it is `/ur3e/root_joint`. The subscriber sends `jointNames`, `positionCommand`, `velocityCommand`, and `effortCommand` into the Articulation Controller. Isaac Sim starts playback automatically so incoming ROS 2 commands are applied immediately.
+
+### Manual UI Setup
 
 Create an Action Graph:
 
 1. Open **Window > Graph Editors > Action Graph**.
 2. Add `On Playback Tick`.
-3. Add `ROS2 Subscribe Joint State`.
-4. Add `Articulation Controller`.
-5. Set the subscriber topic to `/joint_command`.
-6. Set the Articulation Controller target prim to the UR3e articulation root.
-7. Connect tick execution into the subscriber and controller.
-8. Connect subscriber joint names and positions into the controller command inputs.
-9. Press **Play**.
+3. Add `ROS2 Context`.
+4. Add `ROS2 Subscribe Joint State`.
+5. Add `Articulation Controller`.
+6. Add optional `ROS2 Publish Joint State`, `ROS2 Publish Clock`, and `Isaac Read Simulation Time`.
+7. Set `ROS2 Subscribe Joint State.inputs:topicName` to `/joint_command`.
+8. Set `Articulation Controller.inputs:robotPath` to the articulation root. For this asset, use `/ur3e/root_joint`.
+9. Set `ROS2 Publish Joint State.inputs:topicName` to `/joint_states`.
+10. Set `ROS2 Publish Joint State.inputs:targetPrim` to `/ur3e/root_joint`.
+11. Connect tick execution into the subscriber, publisher, clock, and controller.
+12. Connect context into all ROS 2 nodes.
+13. Connect simulation time into joint-state and clock timestamps.
+14. Connect subscriber joint names and commands into the controller command inputs.
+15. Press **Play**.
 
 If the robot does not move, inspect the USD articulation's actual joint names. Then run the demo with `name_mode:=usd_short` or pass explicit `joint_names_csv`.
 
 ## Step 3: Run a Demo Publisher
 
 ```bash
-cd ~/robotx/ros2_ws
+cd /root/ur3e-isaac-sim-digital-twin/ros2_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 run ur3e_omniverse_bridge ur3e_joint_command_demo --ros-args -p topic:=/joint_command
@@ -54,7 +81,19 @@ ros2 run ur3e_omniverse_bridge ur3e_joint_command_demo --ros-args -p topic:=/joi
 Verify the topic:
 
 ```bash
+cd /root/ur3e-isaac-sim-digital-twin
+source scripts/setup_fastdds.sh
+source /opt/ros/jazzy/setup.bash
 ros2 topic echo /joint_command --once
+```
+
+Verify Isaac is publishing state back to ROS 2:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+source scripts/setup_fastdds.sh
+source /opt/ros/jazzy/setup.bash
+ros2 topic echo /joint_states --once
 ```
 
 Expected joint names:
@@ -67,6 +106,17 @@ wrist_1_joint
 wrist_2_joint
 wrist_3_joint
 ```
+
+## Quick Visual Motion Test
+
+To verify the UR3e articulation can move before wiring the ROS 2 Action Graph, run:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_ur3e_demo_motion.sh
+```
+
+This opens `assets/ur3e/ur3e.usd`, initializes the `/ur3e` articulation, and applies a small sinusoidal joint-position demo directly inside Isaac Sim.
 
 ## Step 4: Relay an External App
 
@@ -138,7 +188,7 @@ If your app is outside the Pod, direct ROS 2 discovery can be awkward because Ru
 Expose HTTP port `8000` in the RunPod Pod settings, then run:
 
 ```bash
-cd ~/robotx/ros2_ws
+cd /root/ur3e-isaac-sim-digital-twin/ros2_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 ros2 run ur3e_omniverse_bridge http_joint_command_server --ros-args -p port:=8000

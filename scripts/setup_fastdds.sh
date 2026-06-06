@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 mkdir -p "$HOME/.ros"
 cat > "$HOME/.ros/fastdds.xml" <<'XML'
@@ -27,5 +27,9 @@ if ! grep -q "FASTRTPS_DEFAULT_PROFILES_FILE=.*fastdds.xml" "$HOME/.bashrc"; the
   echo "export FASTRTPS_DEFAULT_PROFILES_FILE=\$HOME/.ros/fastdds.xml" >> "$HOME/.bashrc"
 fi
 
+export RMW_IMPLEMENTATION="${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}"
+export FASTRTPS_DEFAULT_PROFILES_FILE="$HOME/.ros/fastdds.xml"
+
 echo "FastDDS profile written to $HOME/.ros/fastdds.xml"
-echo "Run: export FASTRTPS_DEFAULT_PROFILES_FILE=$HOME/.ros/fastdds.xml"
+echo "RMW_IMPLEMENTATION=$RMW_IMPLEMENTATION"
+echo "FASTRTPS_DEFAULT_PROFILES_FILE=$FASTRTPS_DEFAULT_PROFILES_FILE"
