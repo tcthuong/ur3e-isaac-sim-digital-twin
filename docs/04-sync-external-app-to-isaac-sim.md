@@ -171,6 +171,40 @@ ros2 run ur3e_omniverse_bridge display_trajectory_to_joint_command --ros-args \
 
 When RViz/MoveIt publishes a planned path, the bridge plays the joint points to Isaac Sim.
 
+## Step 6: Execute MoveIt Trajectories in Isaac
+
+For full MoveIt `Plan and Execute`, run Isaac first:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_ur3e_ros2_bridge.sh
+```
+
+Then run the MoveIt stack and the fake trajectory controller bridge:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_isaac_stack.sh
+```
+
+This starts:
+
+- UR3e `robot_state_publisher` for `/robot_description`
+- MoveIt2 `move_group`
+- RViz MoveIt UI
+- `FollowJointTrajectory` action bridge at `/scaled_joint_trajectory_controller/follow_joint_trajectory`
+
+The action bridge receives trajectories from MoveIt and streams `sensor_msgs/JointState` commands to `/joint_command`, which Isaac Sim consumes through its Action Graph.
+
+Run the scripted pick-place style motion:
+
+```bash
+cd /root/ur3e-isaac-sim-digital-twin
+./scripts/run_moveit_pick_place_demo.sh
+```
+
+The current UR3e USD does not include a working gripper, so this demo performs the arm motion sequence: home, approach pick, descend, lift, approach place, descend, retreat, home. Add a gripper/collider asset before using it as a physical grasp simulation.
+
 ## Control Rule
 
 Use one command source at a time:

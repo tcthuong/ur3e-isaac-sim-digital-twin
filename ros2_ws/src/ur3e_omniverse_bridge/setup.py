@@ -22,7 +22,9 @@ setup(
             "ur3e_joint_command_demo = ur3e_omniverse_bridge.ur3e_joint_command_demo:main",
             "external_joint_state_relay = ur3e_omniverse_bridge.external_joint_state_relay:main",
             "display_trajectory_to_joint_command = ur3e_omniverse_bridge.display_trajectory_to_joint_command:main",
+            "follow_joint_trajectory_to_joint_command = ur3e_omniverse_bridge.follow_joint_trajectory_to_joint_command:main",
             "http_joint_command_server = ur3e_omniverse_bridge.http_joint_command_server:main",
+            "moveit_pick_place_demo = ur3e_omniverse_bridge.moveit_pick_place_demo:main",
         ],
     },
 )
